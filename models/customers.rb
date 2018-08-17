@@ -3,28 +3,29 @@ require_relative ('../db/sql_runner.rb')
 class Customer
 
   attr_reader :id
-  attr_accessor :name, :funds
+  attr_accessor :name, :funds, :tickets
 
   def initialize(details)
     @id = details['id'].to_i if details['id']
     @name = details['name']
     @funds = details['funds'].to_i
+    @tickets = 0
   end
 
   def save()
-    sql = "INSERT INTO customers (name, funds)
-    VALUES ($1, $2)
+    sql = "INSERT INTO customers (name, funds, tickets)
+    VALUES ($1, $2, $3)
     RETURNING ID"
-    values = [@name, @funds]
+    values = [@name, @funds, @tickets]
     customer = SqlRunner.run(sql, values).first
     @id = customer['id'].to_i
   end
 
   def update()
     sql = "UPDATE customers
-    SET (name, funds) = ($1, $2)
-    WHERE id = $3"
-    values = [@name, @funds, @id]
+    SET (name, funds, tickets) = ($1, $2, $3)
+    WHERE id = $4"
+    values = [@name, @funds, @tickets, @id]
     SqlRunner.run(sql,values)
     p "Customer details have been updated for #{@name}"
   end
@@ -45,6 +46,18 @@ class Customer
     values = [@id]
     SqlRunner.run(sql,values)
     p "Customer has been deleted"
+  end
+
+  def buy_ticket(film)
+    @funds -= film.price
+  end
+
+  def store_tickets(film)
+    buy_ticket(film)
+    @tickets += 1
+    new_ticket = Ticket.new({"film_id" => film.id, "customer_id" => @id})
+    new_ticket.save()
+    return @tickets
   end
 
   def self.find_by_id(id)
