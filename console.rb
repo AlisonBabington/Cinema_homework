@@ -5,6 +5,7 @@ require_relative('models/tickets.rb')
 require('pry-byebug')
 
 Customer.delete_all()
+Film.delete_all()
 
 customer1 = Customer.new({
   "name" => "Mike Smith",
@@ -22,6 +23,26 @@ customer3 = Customer.new({
 customer3.save()
 
 customers = Customer.all()
+
+film1 = Film.new({
+  "title" => "Heathers",
+  "price" => "10"
+  })
+film1.save()
+
+film2 = Film.new({
+  "title" => "Mean Girls",
+  "price" => "12"
+  })
+film2.save()
+
+film3 = Film.new({
+  "title" => "Spirited Away",
+  "price" => "9"
+  })
+film3.save()
+
+films = Film.all()
 
 pry.binding
 nil
