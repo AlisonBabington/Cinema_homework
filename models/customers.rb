@@ -20,17 +20,6 @@ class Customer
     @id = customer['id'].to_i
   end
 
-  def self.find_by_id(id)
-    sql = "SELECT * FROM customers
-    WHERE id = $1"
-    values = [id]
-    result = SqlRunner.run(sql, values)
-    final_result =  Customer.map_items(result)
-    return final_result if final_result.count > 0
-    return nil
-  end
-
-
   def update()
     sql = "UPDATE customers
     SET (name, funds) = ($1, $2)
@@ -40,12 +29,32 @@ class Customer
     p "Customer details have been updated for #{@name}"
   end
 
+  def find_which_movies()
+    sql = "SELECT films.* FROM films
+    INNER JOIN tickets
+    ON tickets.film_id = films.id
+    WHERE customer_id = $1"
+    values = [@id]
+    films = SqlRunner.run(sql, values)
+    return Film.map_items(films)
+  end
+
   def delete()
     sql = "DELETE FROM customers
     WHERE id = $1"
     values = [@id]
     SqlRunner.run(sql,values)
     p "Customer has been deleted"
+  end
+
+  def self.find_by_id(id)
+    sql = "SELECT * FROM customers
+    WHERE id = $1"
+    values = [id]
+    result = SqlRunner.run(sql, values)
+    final_result =  Customer.map_items(result)
+    return final_result if final_result.count > 0
+    return nil
   end
 
   def self.all()

@@ -37,17 +37,15 @@ class Film
       p "This film has been deleted"
     end
 
-    # def find_stars()
-    #   sql = "SELECT stars.* FROM stars
-    #   INNER JOIN castings
-    #   ON castings.star_id = stars.id
-    #   INNER JOIN films
-    #   ON films.id = castings.film_id
-    #   WHERE castings.film_id = $1"
-    #   values = [@id]
-    #   stars = SqlRunner.run(sql, values)
-    #   result = Star.map_items(stars)
-    # end
+    def find_customers()
+      sql = "SELECT customers.* FROM customers
+      INNER JOIN tickets
+      on tickets.customer_id = customers.id
+      WHERE film_id = $1"
+      values = [@id]
+      customers = SqlRunner.run(sql, values)
+      result = Customer.map_items(customers)
+    end
 
     def self.find_by_id(id)
       sql = "SELECT * FROM films
