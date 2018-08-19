@@ -37,14 +37,38 @@ class Film
       p "This film has been deleted"
     end
 
+    def how_many_watching()
+      sql = "SELECT customers.name FROM customers
+      INNER JOIN tickets
+      ON tickets.customer_id = customers.id
+      WHERE film_id = $1"
+      values = [@id]
+      customers = SqlRunner.run(sql,values)
+      result_array = []
+      customers.map{|customer| result_array << customer}
+      return result_array.size
+    end
+
     def find_customers()
       sql = "SELECT customers.* FROM customers
       INNER JOIN tickets
-      on tickets.customer_id = customers.id
+      ON tickets.customer_id = customers.id
       WHERE film_id = $1"
       values = [@id]
       customers = SqlRunner.run(sql, values)
       result = Customer.map_items(customers)
+    end
+
+    def most_popular_screening()
+      sql = "SELECT tickets.* FROM tickets
+      INNER JOIN screenings
+      ON tickets.screening_id = screenings.id
+      INNER JOIN films
+      ON films.id = screenings.film_id
+      WHERE films.id = $1"
+      values = [@id]
+      tickets = SqlRunner.run(sql, values)
+      result = Ticket.map_items(tickets)
     end
 
     def self.find_by_id(id)
@@ -70,7 +94,6 @@ class Film
     def self.delete_all()
       sql = "DELETE FROM films"
       SqlRunner.run(sql)
-      p "All films have been deleted"
     end
 
     def self.all()

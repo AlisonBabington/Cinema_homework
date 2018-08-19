@@ -4,24 +4,24 @@ class Ticket
 
   def initialize(details)
     @id = details['id'].to_i if details['id']
-    @film_id = details['film_id'].to_i
     @customer_id = details['customer_id'].to_i
+    @screening_id = details['screening_id'].to_i
   end
 
   def save()
-    sql = "INSERT INTO tickets (film_id, customer_id)
+    sql = "INSERT INTO tickets (customer_id, screening_id)
     VALUES ($1, $2)
     RETURNING ID"
-    values = [@film_id, @customer_id]
+    values = [@customer_id, @screening_id]
     ticket = SqlRunner.run(sql, values).first
     @id = ticket['id'].to_i
   end
 
   def update()
     sql = "UPDATE tickets
-    SET (film_id, customer_id) = ($1, $2)
-    WHERE id = $3 "
-    values = [@film_id, @customer_id, @id]
+    SET  (customer_id, screening_id) = ($1, $2, $3)
+    WHERE id = $4"
+    values = [@film_id, @customer_id, @screening_id, @id]
     SqlRunner.run(sql, values)
     p "This ticket has been updated"
   end
@@ -48,7 +48,6 @@ class Ticket
   def self.delete_all()
     sql = "DELETE FROM tickets"
     SqlRunner.run(sql)
-    p "All ticket have been deleted"
   end
 
   def self.all()

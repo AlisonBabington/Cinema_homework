@@ -5,7 +5,7 @@ require_relative('../models/customers.rb')
 require_relative('../models/films.rb')
 require_relative('../models/tickets.rb')
 
-class BarTest < MiniTest::Test
+class CustomerTest < MiniTest::Test
 
   def setup
     @customer1 = Customer.new({"name" => "Mike Smith","funds" => 500})

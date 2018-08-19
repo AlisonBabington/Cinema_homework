@@ -50,14 +50,14 @@ class Customer
 
   def buy_ticket(film)
     @funds -= film.price
+    update
   end
 
-  def store_tickets(film)
+  def store_tickets(film, screening)
     buy_ticket(film)
     @tickets += 1
-    new_ticket = Ticket.new({"film_id" => film.id, "customer_id" => @id})
+    new_ticket = Ticket.new({"customer_id" => @id, "screening_id" => screening.id })
     new_ticket.save()
-    return @tickets
   end
 
   def self.find_by_id(id)
@@ -84,7 +84,6 @@ class Customer
   def self.delete_all()
     sql = "DELETE FROM customers"
     SqlRunner.run(sql)
-    p "All customers have been deleted"
   end
 
 
