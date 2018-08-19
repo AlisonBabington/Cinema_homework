@@ -65,11 +65,14 @@ class Film
       ON tickets.screening_id = screenings.id
       INNER JOIN films
       ON films.id = screenings.film_id
+      GROUP_BY
       WHERE films.id = $1"
       values = [@id]
       tickets = SqlRunner.run(sql, values)
       result = Ticket.map_items(tickets)
+    #not finished
     end
+
 
     def self.find_by_id(id)
       sql = "SELECT * FROM films
